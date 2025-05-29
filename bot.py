@@ -6,11 +6,12 @@ from dotenv import load_dotenv
 from telegram import Update
 from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, ContextTypes, filters
 from database import init_db, save_message,stats
-
+import openai
+from openai import OpenAI
 load_dotenv()
 BOT_TOKEN = os.getenv("TELEGRAM_TOKEN")
-
-
+client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+openai.api_key = os.getenv("OPENAI_API_KEY")
 # Start command
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text("👋 Hello! I'm your chat bot. Ask me anything!")
@@ -21,30 +22,41 @@ async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text("Try asking things like:\n- hello\n- how are you?\n- what is your name")
 
 
-# Smart rule-based handler + Save to DB
 async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_message = update.message.text.lower()
     user_id = update.message.from_user.id
     username = update.message.from_user.username or "Unknown"
 
-    await save_message(user_id, username, user_message)  # 🔁 Save message to DB
+    await save_message(user_id, username, user_message)  # Save to DB
 
-    # Rule-based response
+    # Rule-based responses
     if "hello" in user_message:
         reply = "Hi there! 👋"
     elif "how are you" in user_message:
         reply = "I'm doing great! How about you? 😊"
     elif "your name" in user_message or "who are you" in user_message:
         reply = "I'm a custom Python Telegram bot."
+    elif "capital of ethiopia" in user_message:
+        reply="The capital of Ethiopia is Addis Ababa!"
+    elif "how old are you" in user_message:
+        reply="I am 28 years old "
+    elif "What do you like" in user_message:
+        reply="I like to visit new sites related to technology"
     elif "bye" in user_message:
         reply = "Goodbye! Have a great day! 👋"
-    elif "capital of ethiopia" in user_message:
-        reply="Addis Ababa"
-    elif "what is new" in user_message:
-        reply = "🚀 I'm constantly learning new things to help you better!"
-
     else:
-        reply = "🤔 I didn't understand that. Try 'hello', 'who are you', or 'how are you'."
+        # AI Fallback using OpenAI API
+        try:
+            response = client.chat.completions.create(
+                model="gpt-3.5-turbo-0125",
+                messages=[
+                    {"role": "system", "content": "You are a helpful assistant."},
+                    {"role": "user", "content": user_message}
+                ]
+            )
+            reply = response.choices[0].message.content
+        except Exception as e:
+            reply = f"⚠️ AI Error: {str(e)}"
 
     await update.message.reply_text(reply)
 
