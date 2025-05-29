@@ -44,6 +44,8 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
         reply="I like to visit new sites related to technology"
     elif "bye" in user_message:
         reply = "Goodbye! Have a great day! 👋"
+    elif "what is it" in user_message:
+        reply="These is the the telegram bot created by elshaday "
     else:
         # AI Fallback using OpenAI API
         try:
