@@ -34,6 +34,26 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
         reply = "Hi there! 👋"
     elif "how are you" in user_message:
         reply = "I'm doing great! How about you? 😊"
+    elif "hi" in user_message:
+        reply="Hi dear"
+    elif "who are you" in user_message:
+        reply="I'm a Elshaday , do you want more information? yes/no"
+    elif "yes" in user_message:
+        reply="Elshaday is a software engineer working at Berhan Bank as a software developer"
+    elif "no" in user_message:
+        reply="Thank you dear"
+    elif "what is happeninig" in user_message:
+        reply="Don't afried just communicate as a friend"
+    elif "what is it" in user_message:
+        reply="It is chating with a elshaday's telegram bot"
+    elif "where are you" in user_message:
+        reply="I'm arround you, dont't worry!!!"
+    elif "who is elshaday" in user_message:
+        reply="He is a software developer woriking Berhan Bank"
+    elif "do you say Berhan bank" in user_message:
+        reply="Yeah, Berhan bank is one of the bank institute in Ethiopia"
+    elif "your role " in user_message:
+        reply="I'm a system developer join the team recently"
     elif "your name" in user_message or "who are you" in user_message:
         reply = "I'm a custom Python Telegram bot."
     elif "capital of ethiopia" in user_message:
